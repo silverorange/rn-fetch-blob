@@ -107,9 +107,13 @@ public class RNFetchBlobFileResp extends ResponseBody {
                             // For non-chunked downloads
                             reportProgress(mTaskId, bytesDownloaded, contentLength());
                         } else {
+                            
                             // For chunked downloads
                             if (!isEndMarkerReceived) {
-                                reportProgress(mTaskId, 0, contentLength());
+                                // Gzip downloads also report content length as -1. We report
+                                // bytes downloaded instead of 0 so the app can decide how to
+                                // handle. This matches iOS.
+                                reportProgress(mTaskId, bytesDownloaded, contentLength());
                             } else{
                                 reportProgress(mTaskId, bytesDownloaded, bytesDownloaded);
                             }
